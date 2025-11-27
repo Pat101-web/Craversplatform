@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cravers — Warm Food Delivered Fast</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#050405;
+      --card:#0b0b0c;
+      --accent:#FF7A1A;
+      --muted:#dcd7d2;
+      --gold:#c99d2d;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      --radius:14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+    }
+    body{
+      background:linear-gradient(180deg,var(--bg) 0%, #070607 100%);
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    a { text-decoration: none; }
+    .navbar { background: rgba(11,11,12,0.6); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.02); }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand h1{ margin:0; font-size:20px; color:var(--muted); letter-spacing:0.6px; }
+    .brand p{ margin:0; color:rgba(220,215,210,0.75); font-size:13px; }
+
+    /* Hero */
+    .hero{ padding:56px 0; }
+    .hero-card{ background:linear-gradient(180deg,#0b0b0c, rgba(255,255,255,0.01)); border-radius:var(--radius); padding:28px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.02); }
+    .accent { color:var(--accent); font-weight:800; }
+
+    /* Menu */
+    .food-card { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); border-radius:12px; padding:16px; border:1px solid rgba(255,255,255,0.02); transition: transform .18s, box-shadow .18s; }
+    .food-card:hover{ transform: translateY(-6px); box-shadow:0 20px 40px rgba(0,0,0,0.6); }
+    .price { color:var(--accent); font-weight:700; }
+    .qty { width:90px; }
+
+    /* Form */
+    .form-card{ background: linear-gradient(180deg,#0b0b0c, rgba(255,255,255,0.01)); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.02); }
+    input, textarea, select { background: rgba(255,255,255,0.02); color:var(--muted); border:1px solid rgba(255,255,255,0.03); border-radius:8px; padding:10px; }
+    .btn-accent{ background: linear-gradient(90deg,var(--accent),var(--gold)); color:#0b0b0b; font-weight:700; border-radius:10px; border:none; padding:10px 18px; box-shadow:0 10px 30px rgba(255,122,26,0.08); }
+
+    /* Gallery */
+    .gallery { border-radius:10px; object-fit:cover; width:100%; height:160px; }
+
+
+    /* Footer */
+    footer { padding:28px 0; color: rgba(220,215,210,0.65); text-align:center; }
+
+    /* Modal-like toast */
+    .toast-floating{ position:fixed; right:20px; bottom:20px; background:var(--card); padding:12px 18px; border-radius:12px; box-shadow:0 14px 40px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.02); display:flex; gap:10px; align-items:center; z-index:1200; transform: translateY(20px); opacity:0; transition: all .3s ease; }
+    .toast-floating.show{ transform: translateY(0); opacity:1; }
+
+    /* responsive tweaks */
+    @media (max-width: 767px){
+      .hero{ padding:28px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <div class="brand">
+      <!-- Simple SVG logo -->
+      <svg width="46" height="46" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="36" rx="12" width="108" height="60" fill="#0b0b0c" stroke="url(#g1)" stroke-width="3"/>
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#FF7A1A"/><stop offset="1" stop-color="#C99D2D"/></linearGradient>
+        </defs>
+        <path d="M10 56h18" stroke="#FF7A1A" stroke-width="3" stroke-linecap="round"/>
+        <path d="M10 72h26" stroke="#C99D2D" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+
+      <div>
+        <h1>Cravers</h1>
+        <p>Warm food delivered fast</p>
+      </div>
+    </div>
+
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <div class="text-light me-3 d-none d-md-block">Akwa Ibom • 9am–5pm</div>
+      <a class="btn btn-sm btn-outline-light me-2" href="#contact">Contact</a>
+      <a class="btn btn-sm btn-accent" id="orderNowNav">Order on WhatsApp <i class="fa fa-paper-plane ms-2"></i></a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center gy-4">
+      <div class="col-lg-6">
+        <div class="hero-card">
+          <h2 class="mb-3">Hot meals, kept warm — delivered fast.</h2>
+          <p class="mb-3">Cravers keeps your food at the right temperature until it reaches your table. Browse the menu and place orders quickly on WhatsApp.</p>
+
+          <div class="d-flex gap-2">
+            <button class="btn-accent me-2" id="heroOrderBtn"><i class="fa fa-bolt me-2"></i> Order Now</button>
+            <a class="btn btn-outline-light" href="#menu">See Menu</a>
+          </div>
+
+          <div class="mt-4 text-light small">Free delivery across selected areas in Akwa Ibom. Expandable coverage — confirm on WhatsApp.</div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card bg-dark hero-card border-0 text-center">
+          <img alt="meal" src="images/Jollof Rice Recipe.jpeg" class="img-fluid rounded" />
+          <div class="mt-3">
+            <strong class="accent">Jollof Rice</strong> <span class="ms-2 price">₦1,500</span>
+            <div class="mt-2"><button class="btn btn-sm btn-accent" id="quickOrderRice"><i class="fa fa-whatsapp me-2"></i> Quick Order</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="mb-0">Menu</h3>
+      <div class="text-light small">Tap items to select, set quantities, then proceed to the order form.</div>
+    </div>
+
+    <div class="row g-3">
+      <!-- We'll include each menu item with checkbox + qty -->
+      <!-- Item 1 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">Rice & Stew</h5>
+            <div class="small text-light">Comfort rice with warm stew</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦1,500</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="Rice & Stew" data-price="1500" id="chk-rice">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-rice" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">Pepper Soup Rice + Goat Meat</h5>
+            <div class="small text-light">Spicy pepper soup with tender goat</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦2,000</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="Pepper Soup Rice + Goat Meat" data-price="2000" id="chk-pepper">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-pepper" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">Afang Soup</h5>
+            <div class="small text-light">Traditional Afang with rich greens</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦1,700</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="Afang Soup" data-price="1700" id="chk-afang">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-afang" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">Edikang Ikong (Melon)</h5>
+            <div class="small text-light">Hearty vegetable soup</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦1,700</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="Edikang Ikong (Melon)" data-price="1700" id="chk-edika">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-edika" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">Okro Soup</h5>
+            <div class="small text-light">Okro with your choice of protein</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦1,700</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="Okro Soup" data-price="1700" id="chk-okro">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-okro" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">Atama Soup</h5>
+            <div class="small text-light">Palm fruit rich atama</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦1,700</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="Atama Soup" data-price="1700" id="chk-atama">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-atama" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 7 -->
+      <div class="col-md-6">
+        <div class="food-card p-3 d-flex align-items-center gap-3">
+          <div class="flex-grow-1">
+            <h5 class="mb-1">White Soup (Nsala)</h5>
+            <div class="small text-light">Delicate white soup</div>
+          </div>
+          <div class="text-end">
+            <div class="price mb-2">₦3,000</div>
+            <div class="d-flex align-items-center gap-2">
+              <input type="checkbox" class="menu-check" data-name="White Soup (Nsala)" data-price="3000" id="chk-white">
+              <input type="number" min="1" value="1" class="form-control form-control-sm qty-input d-none qty-white" style="width:80px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extra meats -->
+      <div class="col-md-6">
+        <div class="food-card p-3">
+          <h5 class="mb-1">Extra Cow Meat</h5>
+          <div class="small text-light mb-2">₦300 per piece</div>
+          <div class="d-flex gap-2">
+            <input type="number" min="0" value="0" class="form-control form-control-sm cow-count" style="width:110px;">
+            <div class="small text-light align-self-center">pieces</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="food-card p-3">
+          <h5 class="mb-1">Extra Goat Meat</h5>
+          <div class="small text-light mb-2">₦400 per piece</div>
+          <div class="d-flex gap-2">
+            <input type="number" min="0" value="0" class="form-control form-control-sm goat-count" style="width:110px;">
+            <div class="small text-light align-self-center">pieces</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-4 text-end">
+      <button class="btn btn-accent" id="proceedToForm"><i class="fa fa-check-circle me-2"></i> Proceed to Order Form</button>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER FORM -->
+<section id="order" class="py-5 bg-dark">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="form-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Complete your order</h4>
+            <small class="text-light">We’ll open WhatsApp with all details</small>
+          </div>
+
+          <form id="orderForm">
+            <div class="mb-2">
+              <label class="form-label small text-light">Full Name</label>
+              <input id="custName" class="form-control" required placeholder="e.g. Ijeoma Okon">
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <label class="form-label small text-light">Phone</label>
+                <input id="custPhone" class="form-control" required placeholder="e.g. 0903xxxxxxx">
+              </div>
+              <div class="col-md-6 mb-2">
+                <label class="form-label small text-light">Preferred Delivery Time (optional)</label>
+                <input id="custTime" class="form-control" placeholder="e.g. 10:30 AM">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small text-light">Delivery Address</label>
+              <textarea id="custAddress" class="form-control" required placeholder="House no, street, area"></textarea>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small text-light">Selected Items</label>
+              <textarea id="orderSummary" class="form-control" readonly placeholder="Your selected items will appear here..."></textarea>
+            </div>
+
+            <div class="row gx-2">
+              <div class="col">
+                <label class="form-label small text-light">Extra Cow Meat (pieces)</label>
+                <input id="cowPieces" class="form-control" value="0" type="number" min="0">
+              </div>
+              <div class="col">
+                <label class="form-label small text-light">Extra Goat Meat (pieces)</label>
+                <input id="goatPieces" class="form-control" value="0" type="number" min="0">
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <label class="form-label small text-light">Order Notes (optional)</label>
+              <textarea id="orderNotes" class="form-control" placeholder="Any extra instructions (e.g. no pepper, extra sauce)"></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-accent"><i class="fa fa-paper-plane me-2"></i> Send Order to WhatsApp</button>
+              <button type="button" id="startBotFlow" class="btn btn-outline-light"><i class="fa fa-robot me-2"></i> Use Bot Flow</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right column: About / Help / Bot quick links -->
+      <div class="col-lg-5">
+        <div class="form-card mb-3">
+          <h5>Quick Help</h5>
+          <p class="small text-light">Need to chat or report a complaint? Use the buttons below.</p>
+          <div class="d-grid gap-2">
+            <a id="chatBtn" class="btn btn-outline-light" href="#"><i class="fa fa-comments me-2"></i> Chat with Admin</a>
+            <a id="complaintBtn" class="btn btn-outline-warning" href="#"><i class="fa fa-exclamation-triangle me-2"></i> Report a Complaint</a>
+          </div>
+
+          <hr class="my-3" />
+
+          <h6 class="mb-2">Mini WhatsApp Bot Flow (step-by-step)</h6>
+          <p class="small text-light mb-2">If you prefer guided steps, use these buttons. Each opens WhatsApp with a prefilled step message.</p>
+
+          <div class="d-grid gap-2">
+            <a id="botStep1" class="btn btn-sm btn-light" href="#">Step 1 — Send Name</a>
+            <a id="botStep2" class="btn btn-sm btn-light" href="#">Step 2 — Send Phone</a>
+            <a id="botStep3" class="btn btn-sm btn-light" href="#">Step 3 — Send Address</a>
+            <a id="botStep4" class="btn btn-sm btn-light" href="#">Step 4 — Send Order</a>
+            <a id="botStep5" class="btn btn-sm btn-light" href="#">Step 5 — Extra Meat</a>
+            <a id="botStep6" class="btn btn-sm btn-light" href="#">Step 6 — Confirm</a>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h5>Delivery</h5>
+          <p class="small text-light mb-1">We deliver across Akwa Ibom and expanding. Delivery fee depends on distance — confirmed on WhatsApp.</p>
+          <ul class="small text-light">
+            <li>Opening Hours: 9:00 AM — 5:00 PM</li>
+            <li>Payment: transfer options available</li>
+          </ul>
+
+          <hr />
+
+          <h6 class="mb-2">Gallery</h6>
+          <div class="row g-2">
+            <div class="col-6"><img class="gallery" src="images/abak.jpg.jpeg" alt=""></div>
+            <div class="col-6"><img class="gallery" src="images/Afang.jpg.jpeg" alt=""></div>
+            <div class="col-6 mt-2"><img class="gallery" src="images/atama.jpg.jpeg" alt=""></div>
+            <div class="col-6 mt-2"><img class="gallery" src="images/Jollof Rice Recipe.jpeg" alt=""></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT / TESTIMONIALS / FOOTER -->
+<section id="contact" class="py-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="form-card">
+          <h5>Contact Us</h5>
+          <p class="small text-light">Message admin directly on WhatsApp for support and inquiries.</p>
+          <p class="small mb-2"><i class="fa fa-phone me-2"></i> WhatsApp: <strong>+234 901 373 6810</strong></p>
+          <a id="contactWhats" class="btn btn-accent" href="#"><i class="fa fa-whatsapp me-2"></i> Message on WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-card">
+          <h5>Testimonials</h5>
+          <div class="small text-light">“Hot and fast — ordered for the office and everyone loved it.” — Ijeoma</div>
+          <div class="small text-light mt-2">“Delivered warm. Great packaging and taste.” — Emem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="small">© <span id="year"></span> Cravers — Warm food delivered fast • Built for Akwa Ibom</div>
+  </div>
+</footer>
+
+<!-- Floating toast for feedback -->
+<div id="toast" class="toast-floating" role="status" aria-live="polite" aria-atomic="true">
+  <i class="fa fa-check-circle" style="color:var(--accent); font-size:20px"></i>
+  <div>
+    <div style="font-weight:700">Order prepared</div>
+    <div class="small text-light">Your order summary is ready. We’ll open WhatsApp for confirmation.</div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ===========================
+   Configuration - change if needed
+   =========================== */
+const WHATSAPP_NUMBER = '2349013736810'; // your number in international format (no +, no spaces)
+const WA_BASE = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=';
+
+/* Basic helpers */
+const el = (sel) => document.querySelector(sel);
+const els = (sel) => Array.from(document.querySelectorAll(sel));
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* Show / hide qty inputs when checkbox toggled */
+els('.menu-check').forEach(cb => {
+  cb.addEventListener('change', (e) => {
+    const id = e.target.id;
+    // find matching qty input — we used classes like qty-rice, qty-pepper, mapping by id suffix
+    let suffix = id.split('-')[1];
+    let qtyInput = document.querySelector('.qty-' + suffix);
+    if(qtyInput){
+      qtyInput.classList.toggle('d-none', !e.target.checked);
+      updateOrderSummary();
+    } else {
+      updateOrderSummary();
+    }
+  });
+});
+
+/* Update when any qty changes or meat counts */
+els('.qty-input').forEach(q => q.addEventListener('input', updateOrderSummary));
+el('.cow-count').addEventListener('input', updateOrderSummary);
+el('.goat-count').addEventListener('input', updateOrderSummary);
+
+/* Proceed button scroll */
+document.getElementById('proceedToForm').addEventListener('click', () => {
+  document.getElementById('order').scrollIntoView({behavior:'smooth'});
+  updateOrderSummary();
+});
+
+/* Hero & nav order buttons scroll to order as requested */
+el('#heroOrderBtn').addEventListener('click', () => document.getElementById('order').scrollIntoView({behavior:'smooth'}));
+el('#orderNowNav').addEventListener('click', () => document.getElementById('order').scrollIntoView({behavior:'smooth'}));
+el('#quickOrderRice').addEventListener('click', () => {
+  // check rice if not checked, then scroll to form
+  const chk = el('#chk-rice');
+  if(!chk.checked){ chk.checked = true; chk.dispatchEvent(new Event('change')); el('.qty-rice').classList.remove('d-none'); }
+  document.getElementById('order').scrollIntoView({behavior:'smooth'});
+  updateOrderSummary();
+});
+
+/* Update order summary with selected items & counts */
+function updateOrderSummary(){
+  let items = [];
+  els('.menu-check:checked').forEach(chk => {
+    const name = chk.dataset.name;
+    const price = chk.dataset.price;
+    // attempt to find qty input by id suffix
+    let suffix = chk.id.split('-')[1];
+    let qtyInput = document.querySelector('.qty-' + suffix);
+    let qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+    items.push(`${name} x${qty} (₦${(price*qty).toLocaleString()})`);
+  });
+
+  // meats
+  const cow = parseInt(el('.cow-count').value || 0);
+  const goat = parseInt(el('.goat-count').value || 0);
+  if(cow > 0) items.push(`Cow Meat x${cow} (₦${(300*cow).toLocaleString()})`);
+  if(goat > 0) items.push(`Goat Meat x${goat} (₦${(400*goat).toLocaleString()})`);
+
+  // populate summary
+  el('#orderSummary').value = items.length ? items.join('\\n') : 'No items selected yet';
+}
+
+/* Form submission: build message and open WhatsApp */
+document.getElementById('orderForm').addEventListener('submit', function(e){
+  e.preventDefault();
+
+  // get fields
+  const name = el('#custName').value.trim();
+  const phone = el('#custPhone').value.trim();
+  const time = el('#custTime').value.trim() || 'ASAP';
+  const address = el('#custAddress').value.trim();
+  const notes = el('#orderNotes').value.trim() || 'None';
+  const summary = el('#orderSummary').value.trim();
+
+  if(!name || !phone || !address || !summary || summary === 'No items selected yet'){
+    alert('Please fill name, phone, address and select at least one menu item.');
+    return;
+  }
+
+  // build message (structured)
+  let msg = `Hello Cravers!%0A%0AI want to place an order.%0A%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0APreferred delivery time: ${encodeURIComponent(time)}%0AAddress: ${encodeURIComponent(address)}%0A%0AOrder Items:%0A${encodeURIComponent(summary)}%0A%0ACow Meat pieces: ${encodeURIComponent(el('#cowPieces').value||'0')}%0AGoat Meat pieces: ${encodeURIComponent(el('#goatPieces').value||'0')}%0A%0ANotes: ${encodeURIComponent(notes)}%0A%0AThanks!`;
+
+  // open WhatsApp link
+  window.open(WA_BASE + msg, '_blank');
+
+  // show toast
+  showToast('Order ready — WhatsApp opened for confirmation');
+});
+
+/* Quick chat / complaint links */
+el('#chatBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Hello Cravers! I would like to chat about an order / ask a question.');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#complaintBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Hello Cravers! I want to report a complaint: ');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#contactWhats').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Hello Cravers! I have an inquiry.');
+  window.open(WA_BASE + text, '_blank');
+});
+
+/* Mini Bot Flow buttons — each opens WhatsApp with a single step message.
+   Users click these in order. This mimics a step-by-step bot without API. */
+el('#botStep1').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Step 1: My full name is: ');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#botStep2').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Step 2: My phone number is: ');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#botStep3').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Step 3: My delivery address is: ');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#botStep4').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Step 4: I want to order: ');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#botStep5').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Step 5: Extra meat (Cow/Goat) pieces: ');
+  window.open(WA_BASE + text, '_blank');
+});
+el('#botStep6').addEventListener('click', function(e){
+  e.preventDefault();
+  const text = encodeURIComponent('Step 6: Please confirm my order.');
+  window.open(WA_BASE + text, '_blank');
+});
+
+/* Bot Flow main button — opens a friendly instruction message with steps */
+el('#startBotFlow').addEventListener('click', function(){
+  const text = encodeURIComponent('Hello Cravers! I will follow your guided order steps. Please reply with Step 1 prompt.');
+  window.open(WA_BASE + text, '_blank');
+});
+
+/* Small toast helper */
+function showToast(message){
+  const t = el('#toast');
+  t.querySelector('div div').textContent = message;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 4000);
+}
+
+/* Initialize: update summary on load */
+updateOrderSummary();
+
+</script>
+
+</body>
+</html>
